@@ -4,20 +4,42 @@ import br.edu.fesa.Conditional_Command_Parser.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Utility class for generating an ASCII representation of the abstract syntax tree (AST).
+ *
+ * <p>This class provides methods to generate an ASCII tree from an AST node. It prints each node
+ * along with labels for specific branches (e.g., "Condition", "Left", "Right") for a clearer
+ * representation. If a node does not have a predefined structure, it attempts to extract its
+ * children in a generic manner.
+ */
 public class TreePrinter {
 
+  /*
+   * Generates an ASCII representation of the AST starting from the given node.
+   *
+   * @param node the root node of the AST.
+   * @return a string representing the ASCII tree.
+   */
   public static String generateASCIITree(SyntaxNode node) {
     return generateASCIITree(node, 0, null);
   }
 
-  // Método recursivo que permite adicionar um label opcional para o nó atual
+  /*
+   * Recursively generates an ASCII tree representation for the given node with a specified
+   * indentation and optional child label.
+   *
+   * @param node the AST node.
+   * @param indent the current indentation level.
+   * @param childLabel an optional label to describe the relationship to the parent node.
+   * @return a string representing the ASCII tree starting from the provided node.
+   */
   private static String generateASCIITree(SyntaxNode node, int indent, String childLabel) {
     StringBuilder sb = new StringBuilder();
     if (node == null) {
       return "";
     }
 
-    // Cria a indentação
+    // Generate the indentation string.
     String indentStr = "";
     if (indent > 0) {
       for (int i = 0; i < indent - 1; i++) {
@@ -26,13 +48,14 @@ public class TreePrinter {
       indentStr += "├─ ";
     }
 
-    // Se houver um label para esse nó (por exemplo, "Condition", "Left", etc.)
+    // If a child label is provided (e.g., "Condition", "Left"), add it before the node
+    // representation.
     String labelPrefix = (childLabel != null) ? childLabel + ": " : "";
 
-    // Imprime a linha atual com a representação do nó
+    // Append the current node's string representation.
     sb.append(indentStr).append(labelPrefix).append(getNodeRepresentation(node)).append("\n");
 
-    // Imprime os filhos com rótulo, dependendo do tipo de nó
+    // Recursively print children based on the node type.
     if (node instanceof IfStatement) {
       IfStatement ifStmt = (IfStatement) node;
       sb.append(generateASCIITree(ifStmt.getCondition(), indent + 1, "Condition"));
@@ -46,7 +69,7 @@ public class TreePrinter {
       sb.append(generateASCIITree(bin.getLeft(), indent + 1, "Left"));
       sb.append(generateASCIITree(bin.getRight(), indent + 1, "Right"));
     } else {
-      // Para outros nós, se houver filhos (em casos genéricos)
+      // For other node types, attempt to retrieve any generic children.
       List<SyntaxNode> children = getChildren(node);
       for (SyntaxNode child : children) {
         sb.append(generateASCIITree(child, indent + 1, null));
@@ -56,33 +79,51 @@ public class TreePrinter {
     return sb.toString();
   }
 
-  // Representação textual do nó, usando nomes de token em vez do nome da classe, quando possível.
+  /*
+   * Returns a string representation for the given AST node. For terminal nodes, it shows a
+   * token-like representation.
+   *
+   * @param node the AST node.
+   * @return a string description of the node.
+   */
   private static String getNodeRepresentation(SyntaxNode node) {
-    // Para nós terminais, imprime um token significativo
+    // For identifier nodes, print the identifier name.
     if (node instanceof Identifier) {
       Identifier id = (Identifier) node;
       return "ID(" + id.getName() + ")";
     } else if (node instanceof NumberLiteral) {
+      // For number literals, print the numeric value.
       NumberLiteral num = (NumberLiteral) node;
       return "NUMBER(" + num.getValue() + ")";
     } else if (node instanceof BinOp) {
+      // For binary operations, print the operator.
       BinOp bin = (BinOp) node;
       return "BINOP(" + bin.getOperator() + ")";
     } else if (node instanceof Assignment) {
+      // For assignments, print the identifier being assigned.
       Assignment asg = (Assignment) node;
       return "ASSIGN(" + asg.getIdentifier() + ")";
     } else if (node instanceof IfStatement) {
+      // For if statements, print a simple label.
       return "IF";
     }
-    // Caso padrão: utiliza o nome da classe
+    // Default case: use the simple name of the class.
     return node.getClass().getSimpleName();
   }
 
-  // Caso exista a necessidade de pegar filhos de nós que não forem tratados especificamente,
-  // este método tenta retornar uma lista dos filhos "genéricos"
+  /*
+   * Retrieves generic children from the given AST node.
+   *
+   * <p>This method can be extended to support additional node types that have children not
+   * specifically handled.
+   *
+   * @param node the AST node.
+   * @return a list of child nodes, or an empty list if none.
+   */
   private static List<SyntaxNode> getChildren(SyntaxNode node) {
     List<SyntaxNode> children = new ArrayList<>();
-    // Se há outros tipos de nós com filhos não especificados, adicione-os aqui.
+    // If there are other types of nodes with children that are not explicitly handled, add them
+    // here.
     return children;
   }
 }
