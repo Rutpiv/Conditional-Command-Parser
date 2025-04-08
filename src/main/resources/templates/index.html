@@ -24,6 +24,7 @@
         margin-top: 2rem;
         padding: 1rem;
         border: 1px solid #ccc;
+        background-color: #fafafa;
       }
       .error {
         color: red;
@@ -31,6 +32,7 @@
       pre {
         background: #f4f4f4;
         padding: 1rem;
+        overflow-x: auto;
       }
     </style>
   </head>
@@ -41,29 +43,33 @@
       <form th:action="@{/parse}" method="post">
         <div class="input-group">
           <label for="input">Input:</label>
-          <textarea id="input" name="input" th:value="${param.input}"></textarea>
+          <textarea id="input" name="input" th:text="${param.input}"></textarea>
         </div>
         <button type="submit">Parse</button>
       </form>
 
       <div class="result">
-        <div th:if="${errors != null && !errors.empty}">
+        <!-- Bloco de erros -->
+        <div th:if="${errors != null and !errors.empty}">
           <h3 class="error">Errors:</h3>
           <ul>
             <li th:each="error : ${errors}" th:text="${error}" class="error"></li>
           </ul>
         </div>
 
+        <!-- Exibe a árvore sintática (AST) -->
         <div th:if="${ast != null}">
           <h3>AST:</h3>
           <pre th:text="${ast}"></pre>
         </div>
 
+        <!-- Exibe os conjuntos FIRST -->
         <div th:if="${firstSets != null}">
           <h3>First Sets:</h3>
           <pre th:text="${firstSets}"></pre>
         </div>
 
+        <!-- Exibe os conjuntos FOLLOW -->
         <div th:if="${followSets != null}">
           <h3>Follow Sets:</h3>
           <pre th:text="${followSets}"></pre>
