@@ -25,7 +25,7 @@ public class ParserController {
   public String parseInput(@RequestParam String input, Model model) {
     try {
       ParserResponse response = parserService.parse(input);
-      String asciiTree = TreePrinter.generateASCIITree(response.getAst(), 0);
+      String asciiTree = TreePrinter.generateASCIITree(response.getAst());
 
       model.addAttribute("ast", asciiTree);
       model.addAttribute("firstSets", response.getFirstSets());
