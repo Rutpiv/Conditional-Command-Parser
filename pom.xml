@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.edu.fesa</groupId>
-	<artifactId>first-follow-lexer</artifactId>
+	<artifactId>Conditional-Command-Parser</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>first-follow-lexer</name>
-	<description>Calculates grammar First/Follow sets and implements a simple lexer</description>
+	<name>Conditional-Command-Parser</name>
+	<description>Implementing a Lexical and Syntactic Analyzer with First/Follow in Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -59,14 +59,6 @@
 
 	<build>
 		<plugins>
-        		<plugin>
-		            <groupId>org.codehaus.mojo</groupId>
-		            <artifactId>exec-maven-plugin</artifactId>
-		            <version>3.1.0</version>
-		            <configuration>
-		                <mainClass>br.edu.fesa.first_follow_lexer</mainClass>
-		            </configuration>
-		        </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

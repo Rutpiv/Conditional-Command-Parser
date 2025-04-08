@@ -1,10 +1,10 @@
-package br.edu.fesa.first_follow_lexer;
+package br.edu.fesa.Conditional_Command_Parser;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FirstFollowLexerApplicationTests {
+class ConditionalCommandParserApplicationTests {
 
 	@Test
 	void contextLoads() {
