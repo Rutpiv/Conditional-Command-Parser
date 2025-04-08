@@ -1,7 +1,6 @@
 package br.edu.fesa.parser;
 
 import br.edu.fesa.util.Tokenizer;
-import sun.tools.jstat.ParserException;
 
 public class Parser {
     private String[] tokens;
@@ -13,10 +12,7 @@ public class Parser {
     }
 
     private String currentToken() {
-        if (currentTokenIndex < tokens.length) {
-            return tokens[currentTokenIndex];
-        }
-        return "";
+        return (currentTokenIndex < tokens.length) ? tokens[currentTokenIndex] : "";
     }
 
     private void advance() {
@@ -25,68 +21,79 @@ public class Parser {
 
     public void S() throws ParserException {
         if (currentToken().equals("if")) {
-            advance();
-            if (!currentToken().equals("(")) throw new ParserException("Erro: esperado '('");
-            advance();
-            E();
-            if (!currentToken().equals(")")) throw new ParserException("Erro: esperado ')'");
-            advance();
-            S();
-            if (!currentToken().equals("else")) throw new ParserException("Erro: esperado 'else'");
-            advance();
-            S();
+            // Regra: S → if ( E ) S else S
+            advance(); // Consome 'if'
+            
+            if (!currentToken().equals("(")) 
+                throw new ParserException("Erro: '(' esperado após 'if'");
+            advance(); // Consome '('
+            
+            E(); // Parse expressão
+            
+            if (!currentToken().equals(")")) 
+                throw new ParserException("Erro: ')' esperado após expressão");
+            advance(); // Consome ')'
+            
+            S(); // Parse bloco then
+            
+            if (!currentToken().equals("else")) 
+                throw new ParserException("Erro: 'else' esperado");
+            advance(); // Consome 'else'
+            
+            S(); // Parse bloco else
+            
         } else if (currentToken().matches("[a-zA-Z]+") && nextToken().equals("=")) {
-            advance();
-            advance();
-            E();
+            // Regra: S → id = E
+            advance(); // Consome identificador
+            advance(); // Consome '='
+            E(); // Parse expressão
         } else {
-            throw new ParserException("Erro: sentença inválida em S()");
+            throw new ParserException("Erro de sintaxe em S()");
         }
     }
 
-    public void E() throws ParserException {
-        T();
+    private void E() throws ParserException {
+        T(); // E → T
         while (currentToken().equals("+") || currentToken().equals("-")) {
-            advance();
-            T();
+            advance(); // Consome operador
+            T(); // E → E op T
         }
     }
 
-    public void T() throws ParserException {
-        F();
+    private void T() throws ParserException {
+        F(); // T → F
         while (currentToken().equals("*") || currentToken().equals("/")) {
-            advance();
-            F();
+            advance(); // Consome operador
+            F(); // T → T op F
         }
     }
 
-    public void F() throws ParserException {
+    private void F() throws ParserException {
         if (currentToken().equals("(")) {
-            advance();
-            E();
-            if (!currentToken().equals(")")) throw new ParserException("Erro: esperado ')'");
-            advance();
+            advance(); // Consome '('
+            E(); // Parse expressão interna
+            if (!currentToken().equals(")")) 
+                throw new ParserException("Erro: ')' esperado");
+            advance(); // Consome ')'
         } else if (currentToken().matches("[a-zA-Z]+")) {
-            advance();
+            advance(); // Consome identificador
         } else {
-            throw new ParserException("Erro: esperado identificador ou '('");
+            throw new ParserException("Erro: identificador ou '(' esperado");
         }
     }
 
     public boolean parse() {
         try {
             S();
+            // Verifica se todos os tokens foram consumidos
             return currentTokenIndex == tokens.length;
         } catch (ParserException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return false;
         }
     }
-    
+
     private String nextToken() {
-        if (currentTokenIndex + 1 < tokens.length) {
-            return tokens[currentTokenIndex + 1];
-        }
-        return "";
+        return (currentTokenIndex + 1 < tokens.length) ? tokens[currentTokenIndex + 1] : "";
     }
 }
