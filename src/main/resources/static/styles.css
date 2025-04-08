@@ -1,0 +1,106 @@
+/* ========== LIGHT THEME ========== */
+.tokyo-bg {
+  background-color: #f4f4f8;
+}
+.tokyo-text {
+  color: #343b58;
+}
+.tokyo-cyan {
+  color: #0f4b6e;
+}
+.tokyo-pink {
+  color: #8c4351;
+}
+.tokyo-purple {
+  color: #5a3e8e;
+}
+.tokyo-bg-secondary {
+  background-color: #ffffff;
+}
+.tokyo-bg-input {
+  background-color: #e9e9f1;
+}
+.tokyo-border {
+  border-color: #c5c9d6;
+}
+.tokyo-divider {
+  border-color: #d8dae3;
+}
+.tokyo-cyan-border {
+  border-color: #0f4b6e;
+}
+.tokyo-pink-border {
+  border-color: #8c4351;
+}
+
+/* ========== DARK THEME OVERRIDES ========== */
+.dark .tokyo-bg {
+  background-color: #1a1b26;
+}
+.dark .tokyo-text {
+  color: #a9b1d6;
+}
+.dark .tokyo-cyan {
+  color: #73daca;
+}
+.dark .tokyo-pink {
+  color: #f7768e;
+}
+.dark .tokyo-purple {
+  color: #bb9af7;
+}
+.dark .tokyo-bg-secondary {
+  background-color: #24283b;
+}
+.dark .tokyo-bg-input {
+  background-color: #2a2b3d;
+}
+.dark .tokyo-border {
+  border-color: #51587d;
+}
+.dark .tokyo-divider {
+  border-color: #51587d;
+}
+
+/* ========== COMPONENT STYLES ========== */
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+.dark .theme-toggle {
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+.theme-toggle:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tokyo-gradient {
+  background-image: linear-gradient(135deg, #2959aa 0%, #0f4b6e 100%);
+  color: #f0f4f8 !important;
+}
+.dark .tokyo-gradient {
+  background-image: linear-gradient(135deg, #51587d 0%, #3b4261 100%);
+  color: #a9b1d6 !important;
+}
+
+/* ========== UTILITY OVERRIDES ========== */
+[x-cloak] {
+  display: none !important;
+}
+
+.bg-red-50.dark\\:bg-red-900\\/20 {
+  background-color: rgba(153, 27, 27, 0.2);
+}
+
+/* ========== CUSTOM TRANSITIONS ========== */
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+.focus\:ring-cyan-400:focus {
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+}
