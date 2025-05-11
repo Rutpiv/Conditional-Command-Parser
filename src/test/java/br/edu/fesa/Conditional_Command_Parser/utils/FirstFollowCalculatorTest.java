@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
 import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 
 /* Unit tests for the FirstFollowCalculator component. */
@@ -21,13 +20,13 @@ class FirstFollowCalculatorTest {
 
   /*
    * Verifies if FIRST sets were correctly calculated for each non-terminal.
-   * 
+   *
    * Grammar:
-   *   S → if ( E ) S else S | id = E  
-   *   E → E + T | E - T | T  
-   *   T → T * F | T / F | F  
-   *   F → ( E ) | id  
-   * 
+   *   S → if ( E ) S else S | id = E
+   *   E → E + T | E - T | T
+   *   T → T * F | T / F | F
+   *   F → ( E ) | id
+   *
    * Expected:
    *   FIRST(S) = { "if", "id" }
    *   FIRST(E) = FIRST(T) = FIRST(F) = { "(", "id" }
@@ -46,7 +45,7 @@ class FirstFollowCalculatorTest {
 
   /*
    * Verifies if FOLLOW sets were correctly calculated for each non-terminal.
-   * 
+   *
    * Based on grammar and calculation rules:
    *   FOLLOW(S) = { "$", "else" }
    *   FOLLOW(E) = { "$", "else", ")", "+", "-" }
@@ -59,7 +58,13 @@ class FirstFollowCalculatorTest {
 
     assertEquals(Set.of("$", "else"), follow.get("S"), "Incorrect FOLLOW set for S");
     assertEquals(Set.of("$", "else", ")", "+", "-"), follow.get("E"), "Incorrect FOLLOW set for E");
-    assertEquals(Set.of("$", "else", ")", "*", "+", "-", "/"), follow.get("T"), "Incorrect FOLLOW set for T");
-    assertEquals(Set.of("$", "else", ")", "*", "+", "-", "/"), follow.get("F"), "Incorrect FOLLOW set for F");
+    assertEquals(
+        Set.of("$", "else", ")", "*", "+", "-", "/"),
+        follow.get("T"),
+        "Incorrect FOLLOW set for T");
+    assertEquals(
+        Set.of("$", "else", ")", "*", "+", "-", "/"),
+        follow.get("F"),
+        "Incorrect FOLLOW set for F");
   }
 }
