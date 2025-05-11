@@ -6,7 +6,7 @@ _Tokyo Night Theme (Dark & Light Modes)_
 <div align="center">
   <img alt="Java Version" src="https://img.shields.io/badge/Java-17-orange?logo=java&style=for-the-badge" />
   <img alt="Maven Version" src="https://img.shields.io/badge/Maven-3.9+-blue?logo=apache-maven&style=for-the-badge" />
-  <img alt="Tests Passed" src="https://img.shields.io/badge/Tests-11%20✓-brightgreen?style=for-the-badge" />
+  <img alt="Tests Passed" src="https://img.shields.io/badge/Tests-47%20✓-brightgreen?style=for-the-badge" />
   <img alt="License" src="https://img.shields.io/badge/License-BSD_3--Clause-blue?style=for-the-badge" />
 </div>
 
