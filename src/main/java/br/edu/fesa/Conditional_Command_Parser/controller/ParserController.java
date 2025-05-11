@@ -11,58 +11,53 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/*
- * Controller class that handles web requests for parsing user input.
+/**
+ * Spring MVC controller handling the parsing web interface.
  *
- * <p>This controller provides endpoints for displaying the main page and processing parsing
- * requests. It utilizes the {@link ParserService} to perform lexical and syntactical analysis on
- * input code, and the {@link TreePrinter} to generate an ASCII representation of the resulting
- * abstract syntax tree (AST). The parsed data, including the AST, FIRST sets, FOLLOW sets, and any
- * parsing errors, are added to the model for rendering in the view.
+ * <p>GET "/" renders the input page; POST "/parse" processes the code and returns results.
  */
 @Controller
 public class ParserController {
 
-  // The parser service that encapsulates the logic for parsing input.
-  @Autowired private ParserService parserService;
+  private final ParserService parserService;
 
-  /*
-   * Handles the GET request for the main page.
+  @Autowired
+  public ParserController(ParserService parserService) {
+    this.parserService = parserService;
+  }
+
+  /**
+   * Show the main index page.
    *
-   * @return the view name for the index page.
+   * @return view name "index"
    */
   @GetMapping("/")
   public String index() {
     return "index";
   }
 
-  /*
-   * Processes the POST request to parse the provided input string.
+  /**
+   * Handle code submission, invoke parsing pipeline, and populate the view model.
    *
-   * <p>This method receives the input string from the HTTP request, calls the {@link ParserService}
-   * to perform the parsing, and then generates an ASCII tree representation of the abstract syntax
-   * tree (AST) using the {@link TreePrinter}. The resulting AST, FIRST sets, FOLLOW sets, and any
-   * parsing errors are added to the model for rendering on the index page.
-   *
-   * @param input the input string to be parsed.
-   * @param model the model object that holds attributes to be rendered by the view.
-   * @return the view name for displaying the parsing results.
+   * @param input user’s code to parse
+   * @param model Spring MVC model for passing attributes to the template
+   * @return view name "index"
    */
   @PostMapping("/parse")
   public String parseInput(@RequestParam String input, Model model) {
     try {
-      // Parse the input and build the response containing the AST and computed sets.
+      // Run the full pipeline
       ParserResponse response = parserService.parse(input);
-      // Generate an ASCII representation of the AST for display purposes.
+      // Render ASCII tree
       String asciiTree = TreePrinter.generateASCIITree(response.getAst());
 
-      // Add parsed attributes to the model.
+      // Add attributes for Thymeleaf or JSP
       model.addAttribute("ast", asciiTree);
       model.addAttribute("firstSets", response.getFirstSets());
       model.addAttribute("followSets", response.getFollowSets());
       model.addAttribute("errors", response.getErrors());
     } catch (Exception e) {
-      // In case of any unexpected error, add an error message to the model.
+      // Unexpected failures
       model.addAttribute("errors", List.of("Unexpected error: " + e.getMessage()));
     }
     return "index";
