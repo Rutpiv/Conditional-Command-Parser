@@ -1,76 +1,107 @@
 package br.edu.fesa.Conditional_Command_Parser.service;
 
-import br.edu.fesa.Conditional_Command_Parser.model.*;
-import br.edu.fesa.Conditional_Command_Parser.utils.*;
+import br.edu.fesa.Conditional_Command_Parser.exception.LexicalException;
+import br.edu.fesa.Conditional_Command_Parser.model.ParserResponse;
+import br.edu.fesa.Conditional_Command_Parser.model.SyntaxNode;
+import br.edu.fesa.Conditional_Command_Parser.model.Token;
+import br.edu.fesa.Conditional_Command_Parser.utils.FirstFollowCalculator;
+import br.edu.fesa.Conditional_Command_Parser.utils.Lexer;
 import br.edu.fesa.Conditional_Command_Parser.utils.RecursiveDescentParser;
+import br.edu.fesa.Conditional_Command_Parser.utils.SemanticAnalyzer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/*
- * Service class responsible for orchestrating the parsing process.
- *
- * <p>This service performs the following steps:
+/**
+ * Service that orchestrates the complete parsing pipeline:
  *
  * <ol>
- *   <li>Lexical Analysis: Tokenizes the input string using the {@link Lexer}.
- *   <li>Syntactic Analysis: Constructs an abstract syntax tree (AST) using the {@link
- *       RecursiveDescentParser}.
- *   <li>Response Assembly: Prepares a {@link ParserResponse} containing the AST and the computed
- *       FIRST and FOLLOW sets.
+ *   <li>Lexical analysis (Lexer)
+ *   <li>Syntactic analysis with error recovery (RecursiveDescentParser)
+ *   <li>Semantic analysis (SemanticAnalyzer)
+ *   <li>Packaging results into a ParserResponse
  * </ol>
  */
 @Service
 @Slf4j
 public class ParserService {
 
-  // The lexer component responsible for tokenizing the input.
-  private final Lexer lexer;
-  // The calculator for computing FIRST and FOLLOW sets.
   private final FirstFollowCalculator firstFollowCalculator;
+  private final Lexer lexer;
+  private final RecursiveDescentParser parser;
+  private final SemanticAnalyzer semanticAnalyzer;
 
-  /*
-   * Constructs the ParserService with the required dependencies.
+  /**
+   * Constructs the ParserService with its required components.
    *
-   * @param lexer the lexer used for lexical analysis.
-   * @param firstFollowCalculator the component to compute FIRST and FOLLOW sets.
+   * @param firstFollowCalculator computes FIRST/FOLLOW sets for display
+   * @param lexer performs lexical analysis (tokenization)
+   * @param parser performs syntactic analysis (prototype-scoped)
+   * @param semanticAnalyzer performs semantic checks on the AST
    */
   @Autowired
-  public ParserService(Lexer lexer, FirstFollowCalculator firstFollowCalculator) {
-    this.lexer = lexer;
+  public ParserService(
+      FirstFollowCalculator firstFollowCalculator,
+      Lexer lexer,
+      RecursiveDescentParser parser,
+      SemanticAnalyzer semanticAnalyzer) {
     this.firstFollowCalculator = firstFollowCalculator;
+    this.lexer = lexer;
+    this.parser = parser;
+    this.semanticAnalyzer = semanticAnalyzer;
   }
 
-  /*
-   * Parses the given input string and returns a {@link ParserResponse} object that contains the
-   * AST, FIRST sets, FOLLOW sets, and any syntax errors encountered during parsing.
+  /**
+   * Runs the full compile pipeline on the given input string.
    *
-   * @param input the input string to parse.
-   * @return the parser response containing the results of the parsing process.
+   * @param input source code to be analyzed
+   * @return a {@link ParserResponse} containing:
+   *     <ul>
+   *       <li>AST (possibly partial if errors occurred)
+   *       <li>All lexical, syntactic, and semantic errors found
+   *       <li>FIRST and FOLLOW sets for each nonterminal
+   *     </ul>
    */
   public ParserResponse parse(String input) {
     try {
-      // Step 1: Lexical Analysis - Tokenize the input
+      // 1) Lexical Analysis
       List<Token> tokens = lexer.tokenize(input);
       log.debug("Generated tokens: {}", tokens);
 
-      // Step 2: Syntactic Analysis - Parse the tokens into an AST
-      SyntaxNode ast = new RecursiveDescentParser(tokens).parse();
+      // 2) Syntactic Analysis (error recovery)
+      SyntaxNode ast = parser.parse(tokens);
+      List<String> syntaxErrors = parser.getErrors();
+      if (!syntaxErrors.isEmpty()) {
+        log.error("Syntax errors: {}", syntaxErrors);
+      }
 
-      // Step 3: Build the response containing the AST and computed sets
+      // 3) Semantic Analysis
+      semanticAnalyzer.analyze(ast);
+      List<String> semanticErrors = semanticAnalyzer.getErrors();
+      if (!semanticErrors.isEmpty()) {
+        log.error("Semantic errors: {}", semanticErrors);
+      }
+
+      // 4) Collect all errors together
+      List<String> allErrors = new ArrayList<>(syntaxErrors);
+      allErrors.addAll(semanticErrors);
+
+      // 5) Build and return response
       return ParserResponse.builder()
           .ast(ast)
+          .errors(allErrors.isEmpty() ? Collections.emptyList() : allErrors)
           .firstSets(firstFollowCalculator.getFirstSets())
           .followSets(firstFollowCalculator.getFollowSets())
           .build();
 
-    } catch (SyntaxException ex) {
-      // Log and return the syntax error details along with computed sets
-      log.error("Syntax error: {}", ex.getMessage());
+    } catch (LexicalException lexEx) {
+      // On lexical error, abort further analysis and return only this error
+      log.error("Lexical error: {}", lexEx.getMessage());
       return ParserResponse.builder()
-          .errors(Collections.singletonList(ex.getMessage()))
+          .errors(Collections.singletonList("Lexical error: " + lexEx.getMessage()))
           .firstSets(firstFollowCalculator.getFirstSets())
           .followSets(firstFollowCalculator.getFollowSets())
           .build();
