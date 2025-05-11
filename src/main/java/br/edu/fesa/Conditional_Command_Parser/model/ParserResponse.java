@@ -7,23 +7,24 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-/*
- * Container class for parser output including AST and metadata. Used to return parsing results and
- * auxiliary parser information.
+/**
+ * Container for the result of parsing and semantic analysis.
+ *
+ * <p>Includes the AST root, collected errors, and FIRST/FOLLOW sets used by the parser.
  */
 @Data
 @Builder
 @AllArgsConstructor
 public class ParserResponse {
-  /* Generated abstract syntax tree (AST) root node */
+  /** Root of the generated abstract syntax tree (AST). */
   private SyntaxNode ast;
 
-  /* List of parsing errors encountered during analysis */
+  /** All lexical, syntactic, and semantic errors encountered. */
   private List<String> errors;
 
-  /* First sets used in parser construction (for debugging/analysis) */
+  /** FIRST sets computed for each nonterminal (for debugging or display). */
   private Map<String, Set<String>> firstSets;
 
-  /* Follow sets used in parser construction (for debugging/analysis) */
+  /** FOLLOW sets computed for each nonterminal (for debugging or display). */
   private Map<String, Set<String>> followSets;
 }

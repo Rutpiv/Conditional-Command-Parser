@@ -3,35 +3,38 @@ package br.edu.fesa.Conditional_Command_Parser.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/* Represents a lexical token with type, value, and source code position. */
+/** Represents a lexical token with its type, lexeme, and source position. */
 @Getter
 @AllArgsConstructor
 public class Token {
-  /* Enumeration of possible token types in the language */
+  /** All possible token types in the language, including keywords, literals, operators, and EOF. */
   public enum Type {
     IF, // 'if' keyword
     ELSE, // 'else' keyword
-    LPAREN, // Left parenthesis '('
-    RPAREN, // Right parenthesis ')'
-    ID, // Identifier
-    NUMBER, // Numeric literal
-    EQUALS, // Assignment operator '='
-    PLUS, // Addition operator '+'
-    MINUS, // Subtraction operator '-'
-    TIMES, // Multiplication operator '*'
-    DIVIDE, // Division operator '/'
-    EOF // End-of-file marker
+    LPAREN, // '('
+    RPAREN, // ')'
+    ID, // identifier
+    NUMBER, // integer literal
+    FLOAT, // floating-point literal
+    CHAR, // character literal
+    STRING, // string literal
+    EQUALS, // '='
+    PLUS, // '+'
+    MINUS, // '-'
+    TIMES, // '*'
+    DIVIDE, // '/'
+    EOF // end-of-file marker
   }
 
-  /* The type of the token from the enum */
+  /** Type of this token, from the Type enum. */
   private final Type type;
 
-  /* The literal string value of the token */
+  /** The exact text lexeme of this token. */
   private final String value;
 
-  /* Source code line where token was found */
+  /** Source line number where the token was found. */
   private final int line;
 
-  /* Source code column where token was found */
+  /** Source column number where the token was found. */
   private final int column;
 }

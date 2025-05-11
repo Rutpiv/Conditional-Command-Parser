@@ -3,29 +3,32 @@ package br.edu.fesa.Conditional_Command_Parser.model;
 import lombok.Builder;
 import lombok.Getter;
 
-/*
- * Represents an if-else conditional statement in the abstract syntax tree (AST). Contains condition
- * expression and both execution branches.
+/**
+ * AST node for an if-else conditional statement.
+ *
+ * <p>Example:
+ *
+ * <pre>
+ * if (condition) thenBranch else elseBranch
+ * </pre>
  */
 @Getter
 public class IfStatement extends SyntaxNode {
-  /* Conditional expression determining which branch to execute */
-  private SyntaxNode condition;
+  /** Expression to evaluate for branching. */
+  private final SyntaxNode condition;
 
-  /* Statements to execute when condition is true */
-  private SyntaxNode thenBranch;
+  /** AST subtree to execute when the condition is true. */
+  private final SyntaxNode thenBranch;
 
-  /* Statements to execute when condition is false (optional) */
-  private SyntaxNode elseBranch;
+  /** AST subtree to execute when the condition is false. */
+  private final SyntaxNode elseBranch;
 
-  /*
-   * Lombok-generated builder constructor for IfStatement node
-   *
-   * @param line Source code line number for error reporting
-   * @param column Source code column number for error reporting
-   * @param condition Boolean expression for conditional check
-   * @param thenBranch Code block for true condition case
-   * @param elseBranch Code block for false condition case (nullable)
+  /**
+   * @param line source line of this node
+   * @param column source column of this node
+   * @param condition boolean (or numeric) expression
+   * @param thenBranch subtree for the “then” branch
+   * @param elseBranch subtree for the “else” branch
    */
   @Builder
   public IfStatement(

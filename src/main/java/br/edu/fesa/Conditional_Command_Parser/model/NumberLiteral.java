@@ -1,24 +1,32 @@
 package br.edu.fesa.Conditional_Command_Parser.model;
 
+import br.edu.fesa.Conditional_Command_Parser.model.Token.Type;
 import lombok.Builder;
 import lombok.Getter;
 
-/* Represents a numeric literal value in the abstract syntax tree (AST). */
+/**
+ * AST node for an integer numeric literal.
+ *
+ * <p>Example: <code>42</code>
+ */
 @Getter
 public class NumberLiteral extends SyntaxNode {
-  /* String representation of the numeric value */
-  private String value;
+  /** Raw string representation of the integer literal. */
+  private final String value;
 
-  /*
-   * Lombok-generated builder constructor for NumberLiteral node
-   *
-   * @param line Source code line number for error reporting
-   * @param column Source code column number for error reporting
-   * @param value Numeric value as string (to preserve formatting)
+  /**
+   * @param line source line of this node
+   * @param column source column of this node
+   * @param value literal integer value as string
    */
   @Builder
   public NumberLiteral(int line, int column, String value) {
     super(line, column);
     this.value = value;
+  }
+
+  @Override
+  public Type getType() {
+    return Type.NUMBER;
   }
 }

@@ -2,22 +2,29 @@ package br.edu.fesa.Conditional_Command_Parser.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/*
- * Abstract base class for all nodes in the abstract syntax tree (AST). Provides source code
- * location information for error reporting.
- */
+/** Base class for all AST nodes, holding source-location and semantic-type annotation. */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public abstract class SyntaxNode {
-  /* Source code line where this node originated */
+  /** Semantic type inferred by the semantic analyzer. */
+  private Token.Type type;
+
+  /** Source line number for error reporting. */
   private int line;
 
-  /* Source code column where this node originated */
+  /** Source column number for error reporting. */
   private int column;
 
-  /* Default constructor for nodes without position information */
-  public SyntaxNode() {
-    this(0, 0);
+  /**
+   * Convenience constructor for subclasses that only pass line/column.
+   *
+   * @param line source line of this node
+   * @param column source column of this node
+   */
+  public SyntaxNode(int line, int column) {
+    this(null, line, column);
   }
 }

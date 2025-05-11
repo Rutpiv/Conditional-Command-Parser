@@ -3,25 +3,24 @@ package br.edu.fesa.Conditional_Command_Parser.model;
 import lombok.Builder;
 import lombok.Getter;
 
-/*
- * Represents an assignment statement in the abstract syntax tree (AST). Contains an identifier and
- * the expression being assigned to it.
+/**
+ * AST node for an assignment statement.
+ *
+ * <p>Example: <code>x = expr;</code>
  */
 @Getter
 public class Assignment extends SyntaxNode {
-  /* The identifier (variable name) being assigned to */
-  private String identifier;
+  /** Variable name on the left-hand side of the assignment. */
+  private final String identifier;
 
-  /* The expression whose value will be assigned to the identifier */
-  private SyntaxNode expression;
+  /** Expression whose value will be assigned. */
+  private final SyntaxNode expression;
 
-  /*
-   * Lombok-generated builder constructor for Assignment node
-   *
-   * @param line Source code line number for error reporting
-   * @param column Source code column number for error reporting
-   * @param identifier Target variable name for assignment
-   * @param expression Value expression to be assigned
+  /**
+   * @param line source line of this node
+   * @param column source column of this node
+   * @param identifier target variable name
+   * @param expression expression to assign
    */
   @Builder
   public Assignment(int line, int column, String identifier, SyntaxNode expression) {
