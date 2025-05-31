@@ -148,7 +148,7 @@ src/
 - **Frontend**: Thymeleaf + Tailwind CSS
 - **Parsing Techniques**: Recursive descent parsing, custom lexer/tokenization, first/follow calculations
 - **Build**: Maven 3.9+
-- **Testing**: JUnit 5 (11 Total Tests)
+- **Testing**: JUnit 5 (47 Total Tests)
 
 ---
 
